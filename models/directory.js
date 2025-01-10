@@ -41,10 +41,10 @@ const fileSchema = new Schema({
 //   next();
 // });
 
-// fileSchema.pre('save', function(next){
-//     this.updatedAt = Date.now();
-//     next();
-// });
+fileSchema.pre('save', function(next){
+    this.updatedAt = Date.now();
+    next();
+});
 
 const Directory = mongoose.model('Directory', fileSchema);
 
