@@ -3,7 +3,9 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import router from './routes/directory.js';
 import cors from 'cors';
+require('dotenv').config()
 
+const port = process.env.PORT || 3001
 const app = express();
 
 app.use(express.json())
@@ -13,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', router);
 
 
-mongoose.connect("mongodb+srv://admin:admin1234@directory-app.jrlvr.mongodb.net/?retryWrites=true&w=majority&appName=directory-app")
+mongoose.connect(process.env.MONGODB_URL)
   .then(() => {
     // Start server only after DB connection is successful
     app.listen(3001, () => {
