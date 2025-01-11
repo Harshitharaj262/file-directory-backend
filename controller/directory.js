@@ -52,11 +52,11 @@ export const updateFilesAndFolders = async (req, res) => {
   const { name, type } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(404).send("No directory with that id");
+      return res.status(404).send("No folder");
 
     const findDirectory = await Directory.findById(id);
     if (!findDirectory) {
-      return res.status(404).send("No directory found with that ID");
+      return res.status(404).send("Folder not found");
     }
     findDirectory.name = name;
     findDirectory.type = type;
@@ -79,13 +79,13 @@ export const moveByFileAndFolder = async (req, res) => {
       !mongoose.Types.ObjectId.isValid(sourceId) ||
       !mongoose.Types.ObjectId.isValid(destinationId)
     ) {
-      return res.status(404).json({ message: "No directory with that id" });
+      return res.status(404).json({ message: "No folder found" });
     }
 
     const sourceDirectory = await Directory.findById(sourceId);
     const destinationDirectory = await Directory.findById(destinationId);
     if (destinationDirectory.type !== "folder") {
-      return res.status(400).json({ message: "Destination must be a folder" });
+      return res.status(400).json({ message: "Target folder must be a folder" });
     }
     // Step 1: remove the source parentID's children reference
     const previousParenId = sourceDirectory.parentId;
@@ -110,7 +110,7 @@ export const moveByFileAndFolder = async (req, res) => {
     await Directory.findByIdAndUpdate(sourceId, {
       parentId: destinationId,
     });
-    res.status(200).json({ message: "Moved successfully" });
+    res.status(200).json({ message: `Moved ${destinationDirectory.type} successfully` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -148,7 +148,7 @@ export const deleteByFileAndFolder = async (req, res) => {
     // Delete directories with the collected ids
     await Directory.deleteMany({ _id: { $in: Array.from(allIds) } });
 
-    res.status(200).json({ message: "Deleted successfully" });
+    res.status(200).json({ message: `Delete successfull`});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
